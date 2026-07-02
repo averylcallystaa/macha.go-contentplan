@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 Matcha.Go Content OS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2d5016;
+            --secondary: #6b9d3a;
+            --accent: #a8d5ba;
+            --light: #f0f7f1;
+            --white: #ffffff;
+            --dark: #1a1a1a;
+            --warning: #ff6b6b;
+            --success: #51cf66;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f0f7f1 0%, #e8f4ed 100%);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 40px 0;
+            margin-bottom: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(45, 80, 22, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        nav button {
+            padding: 10px 20px;
+            border: 2px solid var(--secondary);
+            background: var(--white);
+            color: var(--secondary);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        nav button.active {
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        nav button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 157, 58, 0.3);
+        }
+
+        /* Main Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* Card Styling */
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border-left: 5px solid var(--secondary);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .card h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 {
+            color: var(--secondary);
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .stat {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Section Visibility */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Calendar View */
+        .calendar-container {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header button {
+            background: var(--secondary);
+            color: var(--white);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .day-header {
+            background: var(--accent);
+            padding: 10px;
+            text-align: center;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--white);
+        }
+
+        .day-cell:hover {
+            border-color: var(--secondary);
+            background: var(--light);
+        }
+
+        .day-cell.has-event {
+            background: var(--accent);
+            border-color: var(--secondary);
+        }
+
+        .day-number {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .event-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--warning);
+            border-radius: 50%;
+            margin: 0 2px;
+        }
+
+        /* Board View */
+        .board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .board-column {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 15px;
+            min-height: 400px;
+        }
+
+        .board-column h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 1.1em;
+        }
+
+        .board-card {
+            background: var(--white);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--secondary);
+            cursor: move;
+            transition: all 0.2s;
+        }
+
+        .board-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .board-card p {
+            margin: 0;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--secondary);
+            color: var(--white);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--light);
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        /* Input Fields */
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid var(--accent);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(107, 157, 58, 0.1);
+        }
+
+        button.btn-primary {
+            background: var(--secondary);
+            color: var(--white);
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button.btn-primary:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(45, 80, 22, 0.3);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-idea { background: #ffe3e3; color: #c92a2a; }
+        .status-script { background: #fff3bf; color: #b08200; }
+        .status-shooting { background: #d3f9d8; color: #2f5233; }
+        .status-editing { background: #bac8ff; color: #1e3a8a; }
+        .status-caption { background: #e7d4f5; color: #5a189a; }
+        .status-scheduled { background: #ffec99; color: #856404; }
+        .status-uploaded { background: #c3fae8; color: #0b5345; }
+        .status-evaluated { background: #a5d8ff; color: #1971c2; }
+
+        /* Stars Rating */
+        .stars {
+            color: #ffd700;
+            font-size: 1.2em;
+            margin: 5px 0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .board {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+            }
+
+            nav button {
+                width: 100%;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        .emoji {
+            font-size: 1.3em;
+            margin-right: 5px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🌿 Matcha.Go Content OS</h1>
+            <p>Content Management System untuk Content Creator & UMKM</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav>
+            <button class="nav-btn active" onclick="showSection('dashboard')">📊 Dashboard</button>
+            <button class="nav-btn" onclick="showSection('calendar')">🗓️ Content Calendar</button>
+            <button class="nav-btn" onclick="showSection('braindump')">💡 Brain Dump</button>
+            <button class="nav-btn" onclick="showSection('production')">🎬 Production Board</button>
+            <button class="nav-btn" onclick="showSection('library')">📁 Library</button>
+            <button class="nav-btn" onclick="showSection('analytics')">📈 Analytics</button>
+            <button class="nav-btn" onclick="showSection('campaigns')">🎯 Campaigns</button>
+            <button class="nav-btn" onclick="showSection('formula')">🧠 Content Formula</button>
+        </nav>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="section active">
+            <div class="content-grid">
+                <div class="card">
+                    <h2><span class="emoji">🎯</span>Goal Bulan Ini</h2>
+                    <div style="padding: 10px 0;">
+                        <label><input type="checkbox"> Upload 30 Video</label>
+                        <label><input type="checkbox"> 500 Followers Baru</label>
+                        <label><input type="checkbox"> 100K Views</label>
+                        <label><input type="checkbox"> 10 Video >2K Views</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><span class="emoji">👥</span>Followers</h2>
+                    <div class="stat" id="followers">12,450</div>
+                    <div class="stat-label">+350 bulan ini</div>
+                </div>
+
+                <div class="card">
+                    <h2><span class="emoji">👁️</span>Total Views</h2>
+                    <div class="stat" id="views">85,230</div>
+                    <div class="stat-label">+15.2% dari bulan lalu</div>
+                </div>
+
+                <div class="card">
+                    <h2><span class="emoji">⚡</span>Engagement Rate</h2>
+                    <div class="stat" id="engagement">4.8%</div>
+                    <div class="stat-label">Rata-rata per video</div>
+                </div>
+
+                <div class="card">
+                    <h2><span class="emoji">📅</span>Today's Task</h2>
+                    <h3>🎥 Shoot Day 03</h3>
+                    <h3>✂️ Edit Day 02</h3>
+                    <h3>📝 Caption Day 02</h3>
+                    <h3>📤 Upload 18.30</h3>
+                </div>
+
+                <div class="card">
+                    <h2><span class="emoji">🔥</span>Best Performing</h2>
+                    <h3>Day in My Life</h3>
+                    <div class="stat-label">↑ 24.5K Views</div>
+                    <div class="stat-label">⬆️ 1.2K Followers</div>
+                </div>
+
+                <div class="card">
+                    <h2><span class="emoji">💡</span>New Ideas</h2>
+                    <div class="stat" id="ideas">17</div>
+                    <div class="stat-label">Ideas menunggu di Brain Dump</div>
+                    <button class="btn-primary" onclick="openModal('addIdea')">+ Tambah Idea</button>
+                </div>
+
+                <div class="card">
+                    <h2><span class="emoji">📌</span>Next Upload</h2>
+                    <h3>Morning Routine</h3>
+                    <div class="stat-label">Jadwal: 18.30 hari ini</div>
+                    <div class="stat-label">Status: ✅ Siap</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CALENDAR -->
+        <div id="calendar" class="section">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h2>🗓️ Content Calendar</h2>
+                    <div>
+                        <button onclick="prevMonth()">← Bulan Lalu</button>
+                        <button onclick="nextMonth()">Bulan Depan →</button>
+                    </div>
+                </div>
+                <h3 id="monthYear" style="margin-bottom: 20px; color: var(--primary);"></h3>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+
+            <div style="margin-top: 40px;">
+                <h3>📋 Tambah Konten</h3>
+                <div style="background: var(--white); padding: 25px; border-radius: 12px;">
+                    <input type="text" placeholder="Judul Konten">
+                    <select>
+                        <option>-- Pilih Status --</option>
+                        <option>🧠 Idea</option>
+                        <option>✍️ Script</option>
+                        <option>🎥 Shooting</option>
+                        <option>✂️ Editing</option>
+                        <option>📝 Caption</option>
+                        <option>📅 Scheduled</option>
+                        <option>✅ Uploaded</option>
+                        <option>📈 Evaluated</option>
+                    </select>
+                    <select>
+                        <option>-- Pilih Pilar Konten --</option>
+                        <option>POV Mahasiswa</option>
+                        <option>Morning Routine</option>
+                        <option>Matcha Myth</option>
+                        <option>Customer Story</option>
+                        <option>Packing ASMR</option>
+                        <option>Home Cafe</option>
+                        <option>Healthy Lifestyle</option>
+                        <option>Freelancer Life</option>
+                        <option>Weekend Reset</option>
+                    </select>
+                    <select>
+                        <option>-- Platform --</option>
+                        <option>TikTok</option>
+                        <option>Instagram</option>
+                        <option>YouTube Shorts</option>
+                        <option>Reels</option>
+                    </select>
+                    <input type="date" placeholder="Deadline">
+                    <textarea placeholder="Caption"></textarea>
+                    <button class="btn-primary">Tambah ke Kalender</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BRAIN DUMP -->
+        <div id="braindump" class="section">
+            <div style="margin-bottom: 30px;">
+                <h2>💡 Content Brain Dump</h2>
+                <p style="color: #666; margin-bottom: 20px;">Tempat menampung semua ide sebelum dimasukkan ke calendar</p>
+                
+                <div style="background: var(--white); padding: 25px; border-radius: 12px; margin-bottom: 20px;">
+                    <textarea id="newIdea" placeholder="Masukkan ide baru di sini..." style="height: 100px;"></textarea>
+                    <button class="btn-primary" onclick="addIdea()">💾 Simpan Idea</button>
+                </div>
+            </div>
+
+            <div class="content-grid" id="ideaList"></div>
+        </div>
+
+        <!-- PRODUCTION BOARD -->
+        <div id="production" class="section">
+            <h2>🎬 Production Board (Kanban)</h2>
+            <div class="board">
+                <div class="board-column">
+                    <h3>📌 To Shoot</h3>
+                    <div class="board-card"><p>POV Mahasiswa</p></div>
+                    <div class="board-card"><p>Morning Routine</p></div>
+                    <div class="board-card"><p>Matcha Myth</p></div>
+                </div>
+                <div class="board-column">
+                    <h3>🎥 Shot</h3>
+                    <div class="board-card"><p>Customer Story</p></div>
+                    <div class="board-card"><p>Packing ASMR</p></div>
+                </div>
+                <div class="board-column">
+                    <h3>✂️ Editing</h3>
+                    <div class="board-card"><p>Home Cafe</p></div>
+                </div>
+                <div class="board-column">
+                    <h3>👁️ Review</h3>
+                    <div class="board-card"><p>Healthy Lifestyle</p></div>
+                </div>
+                <div class="board-column">
+                    <h3>✅ Done</h3>
+                    <div class="board-card"><p>Freelancer Life</p></div>
+                    <div class="board-card"><p>Weekend Reset</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIBRARY -->
+        <div id="library" class="section">
+            <h2>📁 Content Library</h2>
+            <p style="color: #666; margin-bottom: 20px;">Folder untuk menyimpan semua footage dan assets</p>
+            
+            <div class="content-grid">
+                <div class="card">
+                    <h2><span class="emoji">🌿</span>Matcha Pour</h2>
+                    <div class="stat-label">12 files</div>
+                </div>
+                <div class="card">
+                    <h2><span class="emoji">🌿</span>Whisk</h2>
+                    <div class="stat-label">8 files</div>
+                </div>
+                <div class="card">
+                    <h2><span class="emoji">🌿</span>Milk Pour</h2>
+                    <div class="stat-label">15 files</div>
+                </div>
+                <div class="card">
+                    <h2><span class="emoji">📦</span>Packing</h2>
+                    <div class="stat-label">10 files</div>
+                </div>
+                <div class="card">
+                    <h2><span class="emoji">💻</span>Laptop</h2>
+                    <div class="stat-label">20 files</div>
+                </div>
+                <div class="card">
+                    <h2><span class="emoji">📋</span>Planner</h2>
+                    <div class="stat-label">6 files</div>
+                </div>
+                <div class="card">
+                    <h2><span class="emoji">☕</span>Cafe</h2>
+                    <div class="stat-label">18 files</div>
+                </div>
+                <div class="card">
+                    <h2><span class="emoji">🎬</span>B-roll</h2>
+                    <div class="stat-label">45 files</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANALYTICS -->
+        <div id="analytics" class="section">
+            <h2>📊 Analytics</h2>
+            
+            <div style="background: var(--white); border-radius: 12px; padding: 25px; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>📹 Judul Video</th>
+                                <th>👁️ Views</th>
+                                <th>⏱️ Watch Time</th>
+                                <th>💾 Save</th>
+                                <th>📤 Share</th>
+                                <th>👥 Follow</th>
+                                <th>🎣 Hook</th>
+                                <th>⭐ Nilai</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Morning Routine</strong></td>
+                                <td>3,400</td>
+                                <td>2:15</td>
+                                <td>210</td>
+                                <td>80</td>
+                                <td>40</td>
+                                <td>8/10</td>
+                                <td><span class="stars">⭐⭐⭐⭐☆</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Day in My Life</strong></td>
+                                <td>24,500</td>
+                                <td>4:30</td>
+                                <td>1,200</td>
+                                <td>450</td>
+                                <td>1,200</td>
+                                <td>9/10</td>
+                                <td><span class="stars">⭐⭐⭐⭐⭐</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Matcha ASMR</strong></td>
+                                <td>12,300</td>
+                                <td>3:45</td>
+                                <td>680</td>
+                                <td>220</td>
+                                <td>380</td>
+                                <td>7/10</td>
+                                <td><span class="stars">⭐⭐⭐⭐☆</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Customer Story</strong></td>
+                                <td>8,900</td>
+                                <td>3:20</td>
+                                <td>450</td>
+                                <td>120</td>
+                                <td>290</td>
+                                <td>7/10</td>
+                                <td><span class="stars">⭐⭐⭐☆☆</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Packing ASMR</strong></td>
+                                <td>15,600</td>
+                                <td>5:10</td>
+                                <td>920</td>
+                                <td>340</td>
+                                <td>520</td>
+                                <td>8/10</td>
+                                <td><span class="stars">⭐⭐⭐⭐⭐</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <h2>📊 Monthly Overview</h2>
+                    <h3>Total Views</h3>
+                    <div class="stat">64,700</div>
+                    <hr style="border: none; border-top: 2px solid var(--light); margin: 15px 0;">
+                    <h3>Total Followers +</h3>
+                    <div class="stat">2,430</div>
+                </div>
+                <div class="card">
+                    <h2>🎯 Top Performing</h2>
+                    <h3>🥇 Packing ASMR</h3>
+                    <div class="stat-label">15,600 views</div>
+                    <h3>🥈 Day in My Life</h3>
+                    <div class="stat-label">24,500 views</div>
+                    <h3>🥉 Matcha ASMR</h3>
+                    <div class="stat-label">12,300 views</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAMPAIGNS -->
+        <div id="campaigns" class="section">
+            <h2>🎯 Campaigns & Launch</h2>
+            <p style="color: #666; margin-bottom: 20px;">Mengorganisir konten berdasarkan campaign</p>
+            
+            <div class="content-grid" id="campaignList">
+                <div class="card">
+                    <h2>🚀 Launching Menu Baru</h2>
+                    <div class="stat-label">3 videos planned</div>
+                    <div class="stat-label">Start: 15 Juli</div>
+                </div>
+                <div class="card">
+                    <h2>🎓 Workshop</h2>
+                    <div class="stat-label">5 videos planned</div>
+                    <div class="stat-label">Start: 1 Agustus</div>
+                </div>
+                <div class="card">
+                    <h2>🌙 Ramadhan</h2>
+                    <div class="stat-label">10 videos planned</div>
+                    <div class="stat-label">Start: 28 Februari (next year)</div>
+                </div>
+                <div class="card">
+                    <h2>🇮🇩 17 Agustus</h2>
+                    <div class="stat-label">4 videos planned</div>
+                    <div class="stat-label">Start: 10 Agustus</div>
+                </div>
+                <div class="card">
+                    <h2>🎒 Back to School</h2>
+                    <div class="stat-label">6 videos planned</div>
+                    <div class="stat-label">Start: 15 Agustus</div>
+                </div>
+                <div class="card">
+                    <h2>🎉 Hari Matcha Go</h2>
+                    <div class="stat-label">8 videos planned</div>
+                    <div class="stat-label">Start: Tanggal launching</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENT FORMULA -->
+        <div id="formula" class="section">
+            <h2>🧠 Content Formula</h2>
+            <p style="color: #666; margin-bottom: 20px;">Track formula yang paling efektif untuk konten mu</p>
+            
+            <div style="background: var(--white); border-radius: 12px; padding: 25px; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>🎣 Hook Formula</th>
+                                <th>🔄 Dipakai</th>
+                                <th>📊 Rata-rata Views</th>
+                                <th>⭐ Effectiveness</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>"Nobody sees this..."</strong></td>
+                                <td>12x</td>
+                                <td>28,000</td>
+                                <td><span class="status-badge status-uploaded">Very High</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>"POV:"</strong></td>
+                                <td>8x</td>
+                                <td>35,000</td>
+                                <td><span class="status-badge status-uploaded">Excellent</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>"Things I wish I knew..."</strong></td>
+                                <td>5x</td>
+                                <td>17,000</td>
+                                <td><span class="status-badge" style="background: #c3fae8; color: #0b5345;">Good</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>"Watch till end..."</strong></td>
+                                <td>6x</td>
+                                <td>22,000</td>
+                                <td><span class="status-badge" style="background: #c3fae8; color: #0b5345;">Good</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>"Let me show you..."</strong></td>
+                                <td>10x</td>
+                                <td>18,500</td>
+                                <td><span class="status-badge" style="background: #fff3bf; color: #b08200;">Medium</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <h2>🏆 Top Formula</h2>
+                    <h3>1. "POV:" Format</h3>
+                    <div class="stat-label">Average: 35K views</div>
+                    <div class="stat-label">Used: 8 times</div>
+                    <h3>2. "Nobody sees this..."</h3>
+                    <div class="stat-label">Average: 28K views</div>
+                    <div class="stat-label">Used: 12 times</div>
+                </div>
+                <div class="card">
+                    <h2>📋 Checklist Upload</h2>
+                    <label><input type="checkbox"> ☐ Hook kuat</label>
+                    <label><input type="checkbox"> ☐ Subtitle</label>
+                    <label><input type="checkbox"> ☐ Cover</label>
+                    <label><input type="checkbox"> ☐ CTA</label>
+                    <label><input type="checkbox"> ☐ Hashtag</label>
+                    <label><input type="checkbox"> ☐ SEO</label>
+                    <label><input type="checkbox"> ☐ Pin Comment</label>
+                    <label><input type="checkbox"> ☐ Reply Comment</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div id="addIdea" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span>💡 Tambah Idea Baru</span>
+                    <button class="close-btn" onclick="closeModal('addIdea')">×</button>
+                </div>
+                <textarea placeholder="Deskripsi idea..." style="height: 150px;"></textarea>
+                <select>
+                    <option>-- Kategori --</option>
+                    <option>POV Mahasiswa</option>
+                    <option>Morning Routine</option>
+                    <option>Matcha Myth</option>
+                    <option>Customer Story</option>
+                    <option>Packing ASMR</option>
+                    <option>Home Cafe</option>
+                    <option>Healthy Lifestyle</option>
+                </select>
+                <button class="btn-primary" onclick="closeModal('addIdea')">Simpan Idea</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>🌿 Matcha.Go Content OS • Made with ❤️ untuk creators Indonesia</p>
+            <p style="font-size: 0.9em;">Gampang di-customize dan bisa di-host gratis di GitHub Pages</p>
+        </footer>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(s => s.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update nav buttons
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Generate calendar if needed
+            if (sectionId === 'calendar') {
+                generateCalendar();
+            }
+
+            // Generate ideas if needed
+            if (sectionId === 'braindump') {
+                displayIdeas();
+            }
+        }
+
+        // Calendar Functions
+        let currentDate = new Date();
+
+        function generateCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            document.getElementById('monthYear').textContent = 
+                new Date(year, month).toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+            
+            // Day headers
+            const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+            dayNames.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'day-header';
+                dayHeader.textContent = day;
+                calendarGrid.appendChild(dayHeader);
+            });
+            
+            // Empty cells
+            for (let i = 0; i < firstDay; i++) {
+                calendarGrid.appendChild(document.createElement('div'));
+            }
+            
+            // Days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-cell';
+                dayCell.innerHTML = `<div class="day-number">${day}</div>`;
+                
+                // Add event dots for some days
+                if ([5, 12, 19, 26].includes(day)) {
+                    dayCell.classList.add('has-event');
+                    dayCell.innerHTML += '<div class="event-dot"></div>';
+                }
+                
+                calendarGrid.appendChild(dayCell);
+            }
+        }
+
+        function prevMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generateCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generateCalendar();
+        }
+
+        // Brain Dump Ideas
+        let ideas = [
+            '🎥 POV mahasiswa di hari senin',
+            '☕ Morning routine dengan matcha',
+            '🌿 Matcha myth atau fakta?',
+            '👥 Customer testimonial',
+            '📦 Packing ASMR',
+            '🏠 Home cafe setup',
+            '💪 Healthy lifestyle tips',
+            '👨‍💼 Freelancer daily life',
+            '✨ Weekend reset routine'
+        ];
+
+        function addIdea() {
+            const input = document.getElementById('newIdea');
+            if (input.value.trim()) {
+                ideas.push(input.value);
+                input.value = '';
+                displayIdeas();
+                document.getElementById('ideas').textContent = ideas.length;
+            }
+        }
+
+        function displayIdeas() {
+            const ideaList = document.getElementById('ideaList');
+            ideaList.innerHTML = '';
+            
+            ideas.forEach((idea, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <p style="font-size: 1.1em; margin-bottom: 10px;">${idea}</p>
+                    <button style="background: var(--secondary); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; width: 100%;">
+                        ➜ Pindah ke Calendar
+                    </button>
+                `;
+                ideaList.appendChild(card);
+            });
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+            }
+        }
+
+        // Initialize
+        generateCalendar();
+        document.getElementById('ideas').textContent = ideas.length;
+    </script>
+</body>
+</html>
